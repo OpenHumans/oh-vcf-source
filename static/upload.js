@@ -45,6 +45,7 @@ function putFile(e) {
     response = JSON.parse(xhr.responseText);
     put_xhr.open('PUT', response.url, true);
     put_xhr.setRequestHeader('Content-type','');
+    put_xhr.responseType = 'text';
     put_xhr.send(file);
     put_xhr.onreadystatechange = uploadedFile;
   } else {
