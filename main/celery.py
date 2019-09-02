@@ -67,6 +67,20 @@ def verify_vcf(dfile):
 def process_file(dfile, access_token, member, metadata):
     try:
         vcf_metadata = verify_vcf(dfile)
+    except:
+        api.message("VCF integration: A broken file was deleted",
+                    "While processing your VCF file "
+                    "we noticed that your file does not conform "
+                    "to the expected specifications and it was "
+                    "thus deleted. Email us as support@openhumans.org if "
+                    "you think this file should be valid.",
+                    access_token, base_url=OH_BASE_URL)
+        api.delete_file(access_token,
+                        str(member['project_member_id']),
+                        file_id=str(dfile['id']),
+                        base_url=OH_BASE_URL)
+        raise
+    try:
         tmp_directory = tempfile.mkdtemp()
         base_filename = dfile['basename']
 
@@ -90,12 +104,11 @@ def process_file(dfile, access_token, member, metadata):
                        access_token, base_url=OH_BASE_URL,
                        project_member_id=str(member['project_member_id']))
     except:
-        api.message("VCF integration: A broken file was deleted",
-                    "While processing your VCF file "
-                    "we noticed that your file does not conform "
-                    "to the expected specifications and it was "
-                    "thus deleted. Email us as support@openhumans.org if "
-                    "you think this file should be valid.",
+        api.message("VCF integration: File could not be uploaded",
+                    "Something went wrong when processing your "
+                    "file. Please try to upload it again. "
+                    "Please email us as support@openhumans.org if "
+                    "this keeps happening.",
                     access_token, base_url=OH_BASE_URL)
         api.delete_file(access_token,
                         str(member['project_member_id']),
